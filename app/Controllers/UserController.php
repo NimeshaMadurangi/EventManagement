@@ -106,4 +106,34 @@ class UserController extends BaseController
         session()->destroy();
         return redirect()->to('/login');
     }
+
+    public function listUsers()
+    {
+        // Load the UserModel
+        $userModel = new UserModel();
+        
+        // Get all users
+        $data['users'] = $userModel->findAll();
+
+        // Pass the users data to the view
+        return view('listusers', $data);
+    }
+
+    public function deleteUser($userId)
+    {
+        // Load the UserModel
+        $userModel = new UserModel();
+        
+        // Find the user
+        $user = $userModel->find($userId);
+        
+        if (!$user) {
+            return redirect()->to('/listusers')->with('error', 'User not found');
+        }
+        
+        // Perform delete operation
+        $userModel->delete($userId);
+        
+        return redirect()->to('/listusers')->with('success', 'User deleted successfully');
+    }
 }

@@ -50,7 +50,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                        <a class="nav-link active" aria-current="page" href="<?= base_url('/admin/admindashboard'); ?>">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="<?= base_url('listusers'); ?>">User List</a>
@@ -91,6 +91,15 @@
                 <div class="card text-white" style="background-color: #7C93C3;">
                     <div class="card-body d-flex flex-column align-items-center">
                         <i class="fa-solid fa-file fa-2x mb-2"></i>
+                        <h5 class="card-title">Events</h5>
+                        <p class="card-text fs-1"><?= esc($fileCount); ?></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card text-white" style="background-color: #7C93C3;">
+                    <div class="card-body d-flex flex-column align-items-center">
+                        <i class="fa-solid fa-file fa-2x mb-2"></i>
                         <h5 class="card-title">Files</h5>
                         <p class="card-text fs-1"><?= esc($fileCount); ?></p>
                     </div>
@@ -101,7 +110,7 @@
         <!-- Action Buttons -->
         <div class="d-flex mb-4">
             <a href="<?= base_url('register'); ?>" class="btn btn" style="background-color: #55679C; color: white; margin-right: 10px;">Register</a>
-            <a href="<?= base_url('upload'); ?>" class="btn btn" style="background-color: #55679C; color: white;">Upload</a>
+            <a href="<?= base_url('uploadForm'); ?>" class="btn btn" style="background-color: #55679C; color: white;">Upload</a>
         </div>
 
         <!-- Search Form -->

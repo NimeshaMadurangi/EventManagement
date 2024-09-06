@@ -10,26 +10,41 @@ class FileTable extends Migration
     {
         $this->forge->addField([
             'fileid' => [
-                'type' => 'INT',
-                'constraint' => 11,
-                'unsigned' => true,
+                'type'           => 'INT',
+                'constraint'     => 11,
+                'unsigned'       => true,
                 'auto_increment' => true,
             ],
             'filename' => [
-                'type' => 'VARCHAR',
+                'type'       => 'VARCHAR',
                 'constraint' => '255',
             ],
             'foldername' => [
-                'type' => 'VARCHAR',
+                'type'       => 'VARCHAR',
                 'constraint' => '255',
             ],
             'username' => [
-                'type' => 'VARCHAR',
+                'type'       => 'VARCHAR',
                 'constraint' => '100',
             ],
+            'description' => [
+                'type'       => 'VARCHAR',
+                'constraint' => '500',
+                'null'       => true,  // Description is optional
+            ],
+            'created_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+            'updated_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
         ]);
-        $this->forge->addKey('fileid', true); // Set 'fileid' as primary key
-        $this->forge->addForeignKey('username', 'users', 'username', 'CASCADE', 'CASCADE');
+
+        $this->forge->addKey('fileid', true);  // Primary key
+        $this->forge->addForeignKey('username', 'users', 'username', 'CASCADE', 'CASCADE');  // Foreign key for username
+
         $this->forge->createTable('file');
     }
 
