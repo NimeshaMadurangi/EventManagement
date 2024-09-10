@@ -4,10 +4,10 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\FileModel;
+use App\Models\UserModel;
 
 class FileController extends BaseController
 {
-    // Method to handle file download
     public function download($fileId)
     {
         $fileModel = new FileModel();
@@ -17,7 +17,7 @@ class FileController extends BaseController
             return redirect()->to('/admin')->with('error', 'File not found');
         }
 
-        $filePath = WRITEPATH . 'uploads/' . $file['foldername'] . '/' . $file['filename'];
+        $filePath = FCPATH . 'uploads/' . $file['foldername'] . '/' . $file['filename']; // Changed path to FCPATH
 
         if (!is_file($filePath)) {
             return redirect()->to('/admin')->with('error', 'File does not exist');
@@ -26,39 +26,36 @@ class FileController extends BaseController
         return $this->response->download($filePath, null);
     }
 
-    // Method to display the form for uploading
     public function uploadForm()
     {
-        return view('uploadForm');  // Adjust this to match your view's name
+        return view('uploadForm'); 
     }
 
-    // Method to handle file upload
     public function upload()
     {
         $fileModel = new FileModel();
 
-        // Retrieve the current session
+        // Get the current session
         $session = session();
-        $username = $session->get('username'); // Ensure that 'username' is set in the session
+        $username = $session->get('username'); 
 
         if (!$username) {
             return redirect()->back()->with('error', 'User is not logged in.');
         }
 
-        // Get form input
+        // Retrieve form inputs
         $fileName = $this->request->getPost('filename');
         $folderName = $this->request->getPost('foldername');
         $description = $this->request->getPost('description');
 
-        // Check for folder name
         if (empty($folderName)) {
             return redirect()->back()->with('error', 'Folder name is required.');
         }
 
-        // Create the folder if it doesn't exist
-        $uploadPath = WRITEPATH . 'uploads/' . $folderName;
+        // Change path to save in project directory under public/uploads
+        $uploadPath = FCPATH . 'uploads/' . $folderName;
         if (!is_dir($uploadPath)) {
-            mkdir($uploadPath, 0777, true); // Create the folder with proper permissions
+            mkdir($uploadPath, 0777, true); 
         }
 
         // Handle file upload
@@ -66,24 +63,23 @@ class FileController extends BaseController
         if ($files) {
             foreach ($files['files'] as $file) {
                 if ($file->isValid() && !$file->hasMoved()) {
-                    // Generate a random file name and move it to the folder
+                    // Generate a random file name and move file
                     $newFileName = $file->getRandomName();
                     $file->move($uploadPath, $newFileName);
 
-                    // Save file details into the database
+                    // Save file details in the database
                     $fileModel->save([
                         'filename' => $newFileName,
                         'foldername' => $folderName,
                         'description' => $description,
-                        'username' => $username,  // Save the current user's username
+                        'username' => $username,
                     ]);
                 }
             }
+
             return redirect()->to('/admin/admindashboard')->with('success', 'Files uploaded successfully.');
         }
 
         return redirect()->back()->with('error', 'File upload failed.');
     }
-
-    // Other methods like download, edit, update, delete...
 }

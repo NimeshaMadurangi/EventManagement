@@ -12,7 +12,7 @@
             border-radius: .25rem;
             overflow: hidden;
             margin-bottom: 1rem;
-            height: 400px;
+            height: 450px;
             display: flex;
             flex-direction: column;
         }
@@ -92,7 +92,7 @@
                     <div class="card-body d-flex flex-column align-items-center">
                         <i class="fa-solid fa-file fa-2x mb-2"></i>
                         <h5 class="card-title">Events</h5>
-                        <p class="card-text fs-1"><?= esc($fileCount); ?></p>
+                        <p class="card-text fs-1"><?= esc($eventCount); ?></p>
                     </div>
                 </div>
             </div>
@@ -110,7 +110,8 @@
         <!-- Action Buttons -->
         <div class="d-flex mb-4">
             <a href="<?= base_url('register'); ?>" class="btn btn" style="background-color: #55679C; color: white; margin-right: 10px;">Register</a>
-            <a href="<?= base_url('uploadForm'); ?>" class="btn btn" style="background-color: #55679C; color: white;">Upload</a>
+            <a href="<?= base_url('uploadForm'); ?>" class="btn btn" style="background-color: #55679C; color: white; margin-right: 10px;">Upload</a>
+            <a href="<?= base_url('eventForm'); ?>" class="btn btn" style="background-color: #55679C; color: white;">Create Event</a>
         </div>
 
         <!-- Search Form -->
@@ -130,13 +131,13 @@
                     <div class="gallery-item card">
                         <div class="card-body d-flex flex-column">
                             <?php 
-                            $filePath = base_url('uploads/' . $row['filename']);
+                            $filePath = base_url('uploads/' . $row['foldername'] . '/' . $row['filename']);
                             $fileExtension = strtolower(pathinfo($row['filename'], PATHINFO_EXTENSION));
                             ?>
 
                             <?php if (in_array($fileExtension, ['jpg', 'jpeg', 'png'])): ?>
                                 <img src="<?= $filePath; ?>" alt="Preview">
-                            <?php elseif (in_array($fileExtension, ['mp4', 'avi'])): ?>
+                            <?php elseif (in_array($fileExtension, ['mp4', 'avi', 'mov'])): ?>
                                 <video controls>
                                     <source src="<?= $filePath; ?>" type="video/<?= $fileExtension; ?>">
                                     Your browser does not support the video tag.

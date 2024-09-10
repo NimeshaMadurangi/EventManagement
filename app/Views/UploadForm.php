@@ -52,7 +52,7 @@
 <body>
     <div class="upload-card">
         <h2 class="text-center mb-4">Upload File</h2>
-        <form action="/file/upload" method="post" enctype="multipart/form-data">
+        <form action="/upload" method="post" enctype="multipart/form-data">
             <?= csrf_field() ?>
             <div class="mb-3">
                 <label for="filename" class="form-label">File Name</label>

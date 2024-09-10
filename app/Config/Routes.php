@@ -38,5 +38,10 @@ $routes->get('/file/delete/(:num)', 'FileController::delete/$1');
 $routes->get('/uploadForm', 'FileController::uploadForm');
 $routes->post('/upload', 'FileController::upload');
 
+//event
+$routes->get('/eventForm', 'EventController::eventForm');
+$routes->post('/storeEvent', 'EventController::storeEvent');
+
+
 
 
