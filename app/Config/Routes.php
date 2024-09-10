@@ -41,7 +41,3 @@ $routes->post('/upload', 'FileController::upload');
 //event
 $routes->get('/eventForm', 'EventController::eventForm');
 $routes->post('/storeEvent', 'EventController::storeEvent');
-
-
-
-

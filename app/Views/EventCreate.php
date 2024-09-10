@@ -52,7 +52,7 @@
 <body>
     <div class="upload-card">
         <h2 class="text-center mb-4">Create Event</h2>
-        <form action="/storeEvent" method="post" enctype="multipart/form-data">
+        <form action="/storeEvent" method="post">
             <?= csrf_field() ?>
             <div class="mb-3">
                 <label for="eventname" class="form-label">Event Name</label>
