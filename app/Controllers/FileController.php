@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\FileModel;
-use App\Models\UserModel;
+use CodeIgniter\Exceptions\PageNotFoundException;
 
 class FileController extends BaseController
 {
@@ -17,7 +17,7 @@ class FileController extends BaseController
             return redirect()->to('/admin')->with('error', 'File not found');
         }
 
-        $filePath = FCPATH . 'uploads/' . $file['foldername'] . '/' . $file['filename']; // Changed path to FCPATH
+        $filePath = FCPATH . 'uploads/' . $file['foldername'] . '/' . $file['filename'];
 
         if (!is_file($filePath)) {
             return redirect()->to('/admin')->with('error', 'File does not exist');
@@ -28,23 +28,19 @@ class FileController extends BaseController
 
     public function uploadForm()
     {
-        return view('uploadForm'); 
+        return view('uploadForm');
     }
 
     public function upload()
     {
         $fileModel = new FileModel();
-
-        // Get the current session
         $session = session();
-        $username = $session->get('username'); 
+        $username = $session->get('username');
 
         if (!$username) {
             return redirect()->back()->with('error', 'User is not logged in.');
         }
 
-        // Retrieve form inputs
-        $fileName = $this->request->getPost('filename');
         $folderName = $this->request->getPost('foldername');
         $description = $this->request->getPost('description');
 
@@ -52,27 +48,26 @@ class FileController extends BaseController
             return redirect()->back()->with('error', 'Folder name is required.');
         }
 
-        // Change path to save in project directory under public/uploads
         $uploadPath = FCPATH . 'uploads/' . $folderName;
         if (!is_dir($uploadPath)) {
-            mkdir($uploadPath, 0777, true); 
+            if (!mkdir($uploadPath, 0777, true)) {
+                return redirect()->back()->with('error', 'Failed to create directory.');
+            }
         }
 
-        // Handle file upload
         $files = $this->request->getFiles();
         if ($files) {
             foreach ($files['files'] as $file) {
                 if ($file->isValid() && !$file->hasMoved()) {
-                    // Generate a random file name and move file
                     $newFileName = $file->getRandomName();
                     $file->move($uploadPath, $newFileName);
 
-                    // Save file details in the database
                     $fileModel->save([
                         'filename' => $newFileName,
                         'foldername' => $folderName,
                         'description' => $description,
                         'username' => $username,
+                        'status' => 0,
                     ]);
                 }
             }
@@ -82,4 +77,29 @@ class FileController extends BaseController
 
         return redirect()->back()->with('error', 'File upload failed.');
     }
+
+    public function updateStatus()
+    {
+        $id = $this->request->getPost('fileid');
+        $status = $this->request->getPost('status');
+
+        log_message('debug', "Updating status for file ID $id to $status");
+
+        $fileModel = new FileModel();
+
+        if ($fileModel->updateStatus($id, $status)) {
+            return $this->response->setJSON(['success' => true]);
+        } else {
+            return $this->response->setJSON(['success' => false, 'error' => 'Failed to update status']);
+        }
+    }
+
+    public function approvedUploads()
+    {
+        $fileModel = new FileModel();
+        $data['uploads/'] = $fileModel->where('status', 1)->findAll();
+
+        return view('approve', $data);
+    }
+    
 }

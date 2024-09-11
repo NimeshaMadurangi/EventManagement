@@ -12,27 +12,26 @@ class FileModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    
-    // Allowed fields
-    protected $allowedFields    = ['filename', 'foldername', 'username', 'description'];
 
-    protected bool $allowEmptyInserts = false;
+    // Allowed fields
+    protected $allowedFields    = ['filename', 'foldername', 'username', 'description', 'status'];
 
     // Dates
-    protected $useTimestamps = true;
-    protected $dateFormat    = 'datetime';
-    protected $createdField  = 'created_at';
-    protected $updatedField  = 'updated_at';
+    protected $useTimestamps    = true;
+    protected $dateFormat       = 'datetime';
+    protected $createdField     = 'created_at';
+    protected $updatedField     = 'updated_at';
 
     // Validation rules
-    protected $validationRules      = [
+    protected $validationRules  = [
         'filename'   => 'required|min_length[3]|max_length[255]',
         'foldername' => 'required|min_length[2]|max_length[255]',
         'username'   => 'required|min_length[3]|max_length[100]',
-        'description'=> 'max_length[500]'  // Optional description field
+        'description'=> 'max_length[500]',
+        'status'     => 'required|in_list[0,1]' // Assuming status is an integer (0 or 1)
     ];
 
-    protected $validationMessages   = [
+    protected $validationMessages = [
         'filename' => [
             'required'   => 'File name is required',
             'min_length' => 'File name must be at least 3 characters long',
@@ -47,9 +46,31 @@ class FileModel extends Model
             'required'   => 'Username is required',
             'min_length' => 'Username must be at least 3 characters long',
             'max_length' => 'Username cannot exceed 100 characters'
+        ],
+        'status' => [
+            'required' => 'Status is required',
+            'in_list'  => 'Status must be 0 or 1'
         ]
     ];
 
     protected $skipValidation       = false;
     protected $cleanValidationRules = true;
+
+    /**
+     * Update the status of a file record.
+     *
+     * @param int $id File ID
+     * @param int $status New status (0 or 1)
+     * @return bool True on success, False on failure
+     */
+    public function updateStatus($id, $status)
+    {
+        // Validate the status
+        if (!in_array($status, [0, 1])) {
+            return false;
+        }
+
+        // Update the status
+        return $this->update($id, ['status' => $status]);
+    }
 }

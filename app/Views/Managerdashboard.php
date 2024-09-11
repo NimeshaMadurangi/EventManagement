@@ -38,6 +38,42 @@
                 margin-bottom: .5rem;
             }
         }
+        .toggle-switch {
+            position: relative;
+            width: 40px;
+            height: 20px;
+            display: inline-block;
+        }
+        .toggle-switch input {
+            display: none;
+        }
+        .slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            border-radius: 34px;
+            transition: 0.4s;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 12px;
+            width: 12px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #4CAF50;
+        }
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
     </style>
 </head>
 <body>
@@ -53,7 +89,7 @@
                         <a class="nav-link active" aria-current="page" href="<?= base_url('/admin/admindashboard'); ?>">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= base_url('approved-uploads'); ?>">Accept List</a>
+                        <a class="nav-link" href="<?= base_url('/approved-uploads'); ?>">Accept List</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#" id="logoutLink">Logout</a>
@@ -97,8 +133,8 @@
 
         <!-- Action Buttons -->
         <div class="d-flex mb-4">
-            <a href="<?= base_url('uploadForm'); ?>" class="btn btn" style="background-color: #55679C; color: white; margin-right: 10px;">Upload</a>
-            <a href="<?= base_url('eventForm'); ?>" class="btn btn" style="background-color: #55679C; color: white;">Create Event</a>
+            <a href="<?= base_url('uploadForm'); ?>" class="btn" style="background-color: #55679C; color: white; margin-right: 10px;">Upload</a>
+            <a href="<?= base_url('eventForm'); ?>" class="btn" style="background-color: #55679C; color: white;">Create Event</a>
         </div>
 
         <!-- Search Form -->
@@ -111,51 +147,74 @@
             </form>
         </div>
 
-<!-- Uploads Gallery -->
-<div class="row">
-    <?php foreach ($uploads as $row) : ?>
-        <div class="col-md-3 mb-4">
-            <div class="gallery-item card">
-                <div class="card-body d-flex flex-column">
-                    <?php 
-                    $filePath = base_url('uploads/' . $row['foldername'] . '/' . $row['filename']);
-                    $fileExtension = strtolower(pathinfo($row['filename'], PATHINFO_EXTENSION));
-                    ?>
+        <!-- Uploads Gallery -->
+        <div class="row">
+            <?php foreach ($uploads as $row) : ?>
+                <div class="col-md-3 mb-4">
+                    <div class="gallery-item card">
+                        <div class="card-body d-flex flex-column">
+                            <?php 
+                            $filePath = base_url('uploads/' . $row['foldername'] . '/' . $row['filename']);
+                            $fileExtension = strtolower(pathinfo($row['filename'], PATHINFO_EXTENSION));
+                            ?>
 
-                    <?php if (in_array($fileExtension, ['jpg', 'jpeg', 'png'])): ?>
-                        <img src="<?= $filePath; ?>" alt="Preview">
-                    <?php elseif (in_array($fileExtension, ['mp4', 'avi', 'mov'])): ?>
-                        <video controls>
-                            <source src="<?= $filePath; ?>" type="video/<?= $fileExtension; ?>">
-                            Your browser does not support the video tag.
-                        </video>
-                    <?php else: ?>
-                        <p>Unsupported file type</p>
-                    <?php endif; ?>
+                            <?php if (in_array($fileExtension, ['jpg', 'jpeg', 'png'])): ?>
+                                <img src="<?= $filePath; ?>" alt="Preview">
+                            <?php elseif (in_array($fileExtension, ['mp4', 'avi', 'mov'])): ?>
+                                <video controls>
+                                    <source src="<?= $filePath; ?>" type="video/<?= $fileExtension; ?>">
+                                    Your browser does not support the video tag.
+                                </video>
+                            <?php else: ?>
+                                <p>Unsupported file type</p>
+                            <?php endif; ?>
 
-                    <h5 class="card-title mt-2"><?= esc($row['filename']); ?></h5>
-                    <p class="card-text"><?= esc($row['foldername']); ?></p>
-                    <p class="card-text"><?= esc($row['username']); ?></p>
-                    <p class="card-text text-muted"><?= esc($row['created_at']); ?></p>
+                            <h5 class="card-title mt-2"><?= esc($row['filename']); ?></h5>
+                            <p class="card-text"><?= esc($row['foldername']); ?></p>
+                            <p class="card-text"><?= esc($row['username']); ?></p>
+                            <p class="card-text text-muted"><?= esc($row['created_at']); ?></p>
 
-                    <div class="mt-auto">
-                        <a href="<?= base_url('download/' . $row['fileid']); ?>" class="btn btn-sm" style="background-color: #254336; color: white; margin-bottom: 10px;">Download</a>
+                            <div class="mt-auto text-end">
+                                <a href="<?= base_url('download/' . $row['fileid']); ?>" class="btn btn-sm" style="background-color: #254336; color: white; margin-bottom: 10px;">Download</a>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" class="approval-toggle" data-id="<?= $row['fileid']; ?>" <?= $row['status'] ? 'checked' : '' ?>>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            <?php endforeach; ?>
         </div>
-    <?php endforeach; ?>
-</div>
-
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         document.getElementById('logoutLink').addEventListener('click', function(e) {
             e.preventDefault();
-            // Add your logout functionality here
-            // For example: window.location.href = '<?= base_url('logout'); ?>';
+            window.location.href = '<?= base_url('logout'); ?>'; // Implement the logout URL here
         });
+
+        $(document).on('change', '.approval-toggle', function() {
+            var fileId = $(this).data('id');
+            var isChecked = $(this).is(':checked');
+            var status = isChecked ? 1 : 0; // Assuming 1 for approved and 0 for disapproved
+
+        $.ajax({
+            url: '<?= base_url('file/updateStatus'); ?>', // Ensure this URL matches your route
+            method: 'POST',
+            data: { fileid: fileId, status: status },
+            success: function(response) {
+                if (!response.success) {
+                    alert('Failed to update status');
+                }
+            },
+            error: function() {
+                alert('An error occurred');
+            }
+        });
+    });
     </script>
 </body>
 </html>

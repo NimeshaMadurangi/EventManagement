@@ -32,6 +32,11 @@ class FileTable extends Migration
                 'constraint' => '500',
                 'null'       => true,  // Description is optional
             ],
+            'status' => [
+                'type'       => 'TINYINT',
+                'constraint' => 1,
+                'default'    => 0, // Default status value (e.g., 0 for inactive)
+            ],
             'created_at' => [
                 'type' => 'DATETIME',
                 'null' => true,
