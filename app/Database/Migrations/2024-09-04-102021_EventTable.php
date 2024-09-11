@@ -17,7 +17,7 @@ class EventTable extends Migration
             ],
             'eventname' => [
                 'type' => 'VARCHAR',
-                'constraint' => '100',
+                'constraint' => '255', // Adjusted for validation consistency
             ],
             'eventdate' => [
                 'type' => 'DATE',
@@ -32,6 +32,14 @@ class EventTable extends Migration
             'username' => [
                 'type' => 'VARCHAR',
                 'constraint' => '100',
+            ],
+            'created_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+            'updated_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
             ],
         ]);
         $this->forge->addKey('eventid', true);

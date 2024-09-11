@@ -68,18 +68,13 @@
             </div>
             <div class="mb-3">
                 <label for="location" class="form-label">Location</label>
-                <textarea class="form-control" id="location" name="location" rows="4" placeholder="Enter event location"></textarea>
+                <input type="text" class="form-control" id="location" name="location" placeholder="Enter location" required>
             </div>
-            <button type="submit" class="btn btn-primary">Create</button>
-            <button type="button" class="btn cancel-btn" onclick="redirectToDashboard()">Cancel</button>
+            <button type="submit">Create Event</button>
         </form>
+        <a href="/admin/admindashboard">
+            <button type="button" class="cancel-btn mt-3">Cancel</button>
+        </a>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        function redirectToDashboard() {
-            window.location.href = '/admin/admindashboard';
-        }
-    </script>
 </body>
 </html>

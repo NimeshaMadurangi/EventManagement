@@ -4,96 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manager Dashboard</title>
-   
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-   
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <style>
-        .navbar-dark-red {
-            background-color: #8B0000;
-        }
-        .card {
-            border-radius: 10px;
+        .gallery-item {
+            border: 2px solid #ddd;
+            border-radius: .25rem;
             overflow: hidden;
-            margin-bottom: 20px;
-            position: relative;
-            height: 250px;
+            margin-bottom: 1rem;
+            height: 450px;
+            display: flex;
+            flex-direction: column;
         }
-        .card-img {
+        .gallery-item img, .gallery-item video {
             width: 100%;
-            height: 150px;
+            height: 200px;
             object-fit: cover;
         }
-        .card-body {
-            text-align: center;
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
+        .gallery-item .card-body {
+            padding: .75rem;
+            flex: 1;
+            overflow: hidden;
         }
-        .card-body i {
-            font-size: 1.5rem;
+        .gallery-item .btn {
+            margin-right: .5rem;
         }
-        .search-bar {
-            width: 100%;
-            max-width: 300px;
-            margin-bottom: 20px;
+        .navbar-dark .navbar-nav .nav-link.active {
+            background-color: #55679C;
+            border-radius: .25rem;
         }
-        .gallery {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-        .gallery-item {
-            width: calc(25% - 20px); 
-        }
-        .gallery-item img,
-        .gallery-item video {
-            width: 100%;
-            height: auto;
-        }
-        .toggle-switch {
-            position: relative;
-            width: 40px;
-            height: 20px;
-            display: inline-block;
-        }
-        .toggle-switch input {
-            display: none;
-        }
-        .slider {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            border-radius: 34px;
-            transition: 0.4s;
-        }
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 12px;
-            width: 12px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: 0.4s;
-            border-radius: 50%;
-        }
-        input:checked + .slider {
-            background-color: #4CAF50;
-        }
-        input:checked + .slider:before {
-            transform: translateX(20px);
+        @media (max-width: 768px) {
+            .gallery-item {
+                margin-bottom: .5rem;
+            }
         }
     </style>
 </head>
 <body>
- 
     <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #1E2A5E;">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">Manager Dashboard</a>
@@ -103,13 +50,10 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                        <a class="nav-link active" aria-current="page" href="<?= base_url('/admin/admindashboard'); ?>">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/approved-uploads">Accept List</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Events</a>
+                        <a class="nav-link" href="<?= base_url('approved-uploads'); ?>">Accept List</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#" id="logoutLink">Logout</a>
@@ -119,92 +63,99 @@
         </div>
     </nav>
 
-
     <div class="container mt-4">
-      
-        <input type="text" id="searchInput" class="form-control search-bar" placeholder="Search...">
-       
-        <div class="gallery">
-            <?php if (!empty($uploads)) : ?>
-                <?php foreach ($uploads as $upload) : ?>
-                    <div class="card gallery-item">
-                        <div class="card-body">
-                            <h5 class="card-title"><?= esc($upload['filename']); ?></h5>
-                            <label class="toggle-switch">
-                                <input type="checkbox" <?= $upload['approve'] ? 'checked' : ''; ?> data-id="<?= $upload['id']; ?>" class="approval-toggle">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                        <?php 
-                        $filePath = base_url('uploads/' . $upload['filename']);
-                        $fileExt = pathinfo($upload['filename'], PATHINFO_EXTENSION);
-                        if (in_array($fileExt, ['jpg', 'jpeg', 'png'])): ?>
-                            <img src="<?= $filePath; ?>" class="card-img" alt="Image">
-                        <?php elseif (in_array($fileExt, ['mp4', 'avi'])): ?>
-                            <video class="card-img" controls>
-                                <source src="<?= $filePath; ?>" type="video/<?= $fileExt; ?>">
-                                Your browser does not support the video tag.
-                            </video>
-                        <?php else: ?>
-                            <p>Unsupported file type</p>
-                        <?php endif; ?>
-                    </div>
-                <?php endforeach; ?>
-            <?php else : ?>
-                <div class="col-12">No data found</div>
-            <?php endif; ?>
-        </div>
-    </div>
+        <!-- Success and Error Flash Messages -->
+        <?php if (session()->getFlashdata('success')): ?>
+            <div class="alert alert-success"><?= session()->getFlashdata('success'); ?></div>
+        <?php endif; ?>
 
-   
+        <?php if (session()->getFlashdata('error')): ?>
+            <div class="alert alert-danger"><?= session()->getFlashdata('error'); ?></div>
+        <?php endif; ?>
+
+        <!-- Stats Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3 mb-4">
+                <div class="card text-white" style="background-color: #7C93C3;">
+                    <div class="card-body d-flex flex-column align-items-center">
+                        <i class="fa-solid fa-file fa-2x mb-2"></i>
+                        <h5 class="card-title">Events</h5>
+                        <p class="card-text fs-1"><?= esc($eventCount); ?></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card text-white" style="background-color: #7C93C3;">
+                    <div class="card-body d-flex flex-column align-items-center">
+                        <i class="fa-solid fa-file fa-2x mb-2"></i>
+                        <h5 class="card-title">Files</h5>
+                        <p class="card-text fs-1"><?= esc($fileCount); ?></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="d-flex mb-4">
+            <a href="<?= base_url('uploadForm'); ?>" class="btn btn" style="background-color: #55679C; color: white; margin-right: 10px;">Upload</a>
+            <a href="<?= base_url('eventForm'); ?>" class="btn btn" style="background-color: #55679C; color: white;">Create Event</a>
+        </div>
+
+        <!-- Search Form -->
+        <div class="mb-4">
+            <form method="get" action="<?= base_url('admin'); ?>">
+                <div class="input-group">
+                    <input type="text" class="form-control" name="search" placeholder="Search uploads..." value="<?= esc($searchQuery); ?>">
+                    <button class="btn btn-primary" type="submit">Search</button>
+                </div>
+            </form>
+        </div>
+
+<!-- Uploads Gallery -->
+<div class="row">
+    <?php foreach ($uploads as $row) : ?>
+        <div class="col-md-3 mb-4">
+            <div class="gallery-item card">
+                <div class="card-body d-flex flex-column">
+                    <?php 
+                    $filePath = base_url('uploads/' . $row['foldername'] . '/' . $row['filename']);
+                    $fileExtension = strtolower(pathinfo($row['filename'], PATHINFO_EXTENSION));
+                    ?>
+
+                    <?php if (in_array($fileExtension, ['jpg', 'jpeg', 'png'])): ?>
+                        <img src="<?= $filePath; ?>" alt="Preview">
+                    <?php elseif (in_array($fileExtension, ['mp4', 'avi', 'mov'])): ?>
+                        <video controls>
+                            <source src="<?= $filePath; ?>" type="video/<?= $fileExtension; ?>">
+                            Your browser does not support the video tag.
+                        </video>
+                    <?php else: ?>
+                        <p>Unsupported file type</p>
+                    <?php endif; ?>
+
+                    <h5 class="card-title mt-2"><?= esc($row['filename']); ?></h5>
+                    <p class="card-text"><?= esc($row['foldername']); ?></p>
+                    <p class="card-text"><?= esc($row['username']); ?></p>
+                    <p class="card-text text-muted"><?= esc($row['created_at']); ?></p>
+
+                    <div class="mt-auto">
+                        <a href="<?= base_url('download/' . $row['fileid']); ?>" class="btn btn-sm" style="background-color: #254336; color: white; margin-bottom: 10px;">Download</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php endforeach; ?>
+</div>
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    
     <script>
-        document.getElementById('searchInput').addEventListener('keyup', function() {
-            const filter = this.value.toLowerCase();
-            const cards = document.querySelectorAll('.gallery-item');
-            cards.forEach(card => {
-                const title = card.querySelector('.card-title').textContent.toLowerCase();
-                card.style.display = title.includes(filter) ? '' : 'none';
-            });
-        });
-
-        document.querySelectorAll('.approval-toggle').forEach(toggle => {
-            toggle.addEventListener('change', function() {
-                const id = this.dataset.id;
-                const isChecked = this.checked;
-
-                fetch('<?= base_url('update_approval_status'); ?>', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ id, approved: isChecked })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (!data.success) {
-                        alert('Failed to approve');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error updating approval');
-                });
-            });
+        document.getElementById('logoutLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            // Add your logout functionality here
+            // For example: window.location.href = '<?= base_url('logout'); ?>';
         });
     </script>
-
-    
-    <script>
-        document.getElementById('logoutLink').addEventListener('click', function(event) {
-            event.preventDefault();
-            if (confirm('Are you sure you want to logout?')) {
-                window.location.href = '/logout';
-            }
-        });
-    </script>
-    
 </body>
 </html>

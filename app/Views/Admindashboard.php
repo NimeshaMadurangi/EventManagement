@@ -124,44 +124,44 @@
             </form>
         </div>
 
-        <!-- Uploads Gallery -->
-        <div class="row">
-            <?php foreach ($uploads as $row) : ?>
-                <div class="col-md-3 mb-4">
-                    <div class="gallery-item card">
-                        <div class="card-body d-flex flex-column">
-                            <?php 
-                            $filePath = base_url('uploads/' . $row['foldername'] . '/' . $row['filename']);
-                            $fileExtension = strtolower(pathinfo($row['filename'], PATHINFO_EXTENSION));
-                            ?>
+<!-- Uploads Gallery -->
+<div class="row">
+    <?php foreach ($uploads as $row) : ?>
+        <div class="col-md-3 mb-4">
+            <div class="gallery-item card">
+                <div class="card-body d-flex flex-column">
+                    <?php 
+                    $filePath = base_url('uploads/' . $row['foldername'] . '/' . $row['filename']);
+                    $fileExtension = strtolower(pathinfo($row['filename'], PATHINFO_EXTENSION));
+                    ?>
 
-                            <?php if (in_array($fileExtension, ['jpg', 'jpeg', 'png'])): ?>
-                                <img src="<?= $filePath; ?>" alt="Preview">
-                            <?php elseif (in_array($fileExtension, ['mp4', 'avi', 'mov'])): ?>
-                                <video controls>
-                                    <source src="<?= $filePath; ?>" type="video/<?= $fileExtension; ?>">
-                                    Your browser does not support the video tag.
-                                </video>
-                            <?php else: ?>
-                                <p>Unsupported file type</p>
-                            <?php endif; ?>
+                    <?php if (in_array($fileExtension, ['jpg', 'jpeg', 'png'])): ?>
+                        <img src="<?= $filePath; ?>" alt="Preview">
+                    <?php elseif (in_array($fileExtension, ['mp4', 'avi', 'mov'])): ?>
+                        <video controls>
+                            <source src="<?= $filePath; ?>" type="video/<?= $fileExtension; ?>">
+                            Your browser does not support the video tag.
+                        </video>
+                    <?php else: ?>
+                        <p>Unsupported file type</p>
+                    <?php endif; ?>
 
-                            <h5 class="card-title mt-2"><?= esc($row['filename']); ?></h5>
-                            <p class="card-text"><?= esc($row['foldername']); ?></p>
-                            <p class="card-text"><?= esc($row['username']); ?></p>
-                            <p class="card-text text-muted"><?= esc($row['created_at']); ?></p>
+                    <h5 class="card-title mt-2"><?= esc($row['filename']); ?></h5>
+                    <p class="card-text"><?= esc($row['foldername']); ?></p>
+                    <p class="card-text"><?= esc($row['username']); ?></p>
+                    <p class="card-text text-muted"><?= esc($row['created_at']); ?></p>
 
-                            <div class="mt-auto">
-                                <a href="<?= base_url('download/' . $row['fileid']); ?>" class="btn btn-sm" style="background-color: #254336; color: white;">Download</a>
-                                <a href="<?= base_url('edit/' . $row['fileid']); ?>" class="btn btn-sm" style="background-color: #E0A75E; color: white;">Edit</a>
-                                <a href="<?= base_url('delete/' . $row['fileid']); ?>" class="btn btn-sm" style="background-color: #800000; color: white;" onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
-                            </div>
-                        </div>
+                    <div class="mt-auto">
+                        <a href="<?= base_url('download/' . $row['fileid']); ?>" class="btn btn-sm" style="background-color: #254336; color: white; margin-bottom: 10px;">Download</a>
+                        <a href="<?= base_url('edit/' . $row['fileid']); ?>" class="btn btn-sm" style="background-color: #E0A75E; color: white; margin-bottom: 10px;">Edit</a>
+                        <a href="<?= base_url('delete/' . $row['fileid']); ?>" class="btn btn-sm" style="background-color: #800000; color: white; margin-bottom: 10px;" onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
                     </div>
                 </div>
-            <?php endforeach; ?>
+            </div>
         </div>
-    </div>
+    <?php endforeach; ?>
+</div>
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 

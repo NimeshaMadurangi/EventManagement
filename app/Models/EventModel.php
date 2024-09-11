@@ -21,13 +21,12 @@ class EventModel extends Model
     protected $dateFormat    = 'datetime';
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
-    protected $deletedField  = 'deleted_at';
 
     // Validation
     protected $validationRules = [
         'eventname' => 'required|min_length[3]|max_length[255]',
         'eventdate' => 'required|valid_date[Y-m-d]',
-        'time'      => 'required|valid_date[H:i:s]',
+        'time'      => 'required|valid_date[H:i]',
         'location'  => 'required|max_length[255]',
         'username'  => 'required|min_length[3]|max_length[100]'
     ];
@@ -44,7 +43,7 @@ class EventModel extends Model
         ],
         'time' => [
             'required'   => 'Event time is required',
-            'valid_date' => 'Event time must be in the format H:i:s (e.g., 14:30:00)'
+            'valid_date' => 'Event time must be in the format H:i (e.g., 14:30)'
         ],
         'location' => [
             'required'   => 'Location is required',
