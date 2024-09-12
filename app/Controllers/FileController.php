@@ -97,7 +97,7 @@ class FileController extends BaseController
     public function approvedUploads()
     {
         $fileModel = new FileModel();
-        $data['uploads/'] = $fileModel->where('status', 1)->findAll();
+        $data['uploads'] = $fileModel->where('status', 1)->findAll();
 
         return view('approve', $data);
     }

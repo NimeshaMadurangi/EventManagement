@@ -60,34 +60,17 @@
             <div class="alert alert-danger"><?= session()->getFlashdata('error'); ?></div>
         <?php endif; ?>
 
-        <!-- Debugging Data -->
-        <pre><?php print_r($uploads); ?></pre>
-
         <!-- Approved Uploads Gallery -->
         <div class="row">
-            <?php if (!empty($uploads)): ?>
-                <?php foreach ($uploads as $row): ?>
+            <?php if (!empty($files)): ?>
+                <?php foreach ($files as $row): ?>
                     <div class="col-md-3 mb-4">
                         <div class="gallery-item card">
                             <div class="card-body d-flex flex-column">
                                 <?php
-                                $filePath = base_url('uploads/' . $row['foldername'] . '/' . $row['filename']);
+                                $filePath = base_url('uploads' . $row['foldername'] . '/' . $row['filename']);
                                 $fileExtension = strtolower(pathinfo($row['filename'], PATHINFO_EXTENSION));
                                 ?>
-
-                                <pre><?php print_r($filePath); ?></pre>
-                                <pre><?php print_r($fileExtension); ?></pre>
-
-                                <?php if (in_array($fileExtension, ['jpg', 'jpeg', 'png'])): ?>
-                                    <img src="<?= $filePath; ?>" alt="Preview">
-                                <?php elseif (in_array($fileExtension, ['mp4', 'avi', 'mov'])): ?>
-                                    <video controls>
-                                        <source src="<?= $filePath; ?>" type="video/<?= $fileExtension; ?>">
-                                        Your browser does not support the video tag.
-                                    </video>
-                                <?php else: ?>
-                                    <p>Unsupported file type</p>
-                                <?php endif; ?>
 
                                 <h5 class="card-title mt-2"><?= esc($row['filename']); ?></h5>
                                 <p class="card-text"><?= esc($row['foldername']); ?></p>
