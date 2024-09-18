@@ -21,6 +21,10 @@ class DashboardController extends BaseController
         $data['fileCount'] = $fileModel->countAllResults();
         $data['eventCount'] = $eventModel->countAllResults();
 
+        $data['upcomingEvents'] = $eventModel->where('eventdate >=', date('Y-m-d'))
+                                             ->orderBy('eventdate', 'ASC')
+                                             ->findAll();
+
         // Get search query if any
         $searchQuery = $this->request->getGet('search');
         if ($searchQuery) {
