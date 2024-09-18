@@ -57,6 +57,10 @@ class DashboardController extends BaseController
         $data['fileCount'] = $fileModel->countAllResults();
         $data['eventCount'] = $eventModel->countAllResults();
 
+        $data['upcomingEvents'] = $eventModel->where('eventdate >=', date('Y-m-d'))
+                                             ->orderBy('eventdate', 'ASC')
+                                             ->findAll();
+
         // Get search query if any
         $searchQuery = $this->request->getGet('search');
         if ($searchQuery) {
@@ -82,7 +86,30 @@ class DashboardController extends BaseController
 
     public function photographer()
     {
-        return view('photographerdashboard');
+
+        $eventModel = new EventModel();
+        $fileModel = new FileModel();
+
+        $data['upcomingEvents'] = $eventModel->where('eventdate >=', date('Y-m-d'))
+                                             ->orderBy('eventdate', 'ASC')
+                                             ->findAll();
+
+        $session = session();
+        $username = $session->get('username'); // Retrieve username from session
+                                     
+        // Fetch files created by the current user, grouped by foldername
+        $files = $fileModel->where('username', $username)->findAll();
+                                     
+        // Group files by foldername
+        $folders = [];
+            foreach ($files as $file) {
+                $folders[$file['foldername']][] = $file;
+            }
+                                     
+            // Pass grouped folders and files to the view
+            $data['folders'] = $folders;
+
+        return view('photographerdashboard', $data);
     }
 
     public function fbteam()

@@ -6,8 +6,8 @@
     <title>Admin Dashboard</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-   
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    
     <style>
         .navbar-dark-red {
             background-color: #8B0000;
@@ -25,6 +25,16 @@
             top: 10px;
             right: 10px;
             opacity: 0.2;
+        }
+        .folder-card {
+            background-color: #00563f !important;
+            color: white;
+            margin-bottom: 20px;
+        }
+        .file-card {
+            background-color: #55679C !important;
+            color: white;
+            margin-bottom: 20px;
         }
         .search-bar {
             width: 100%;
@@ -44,6 +54,10 @@
         .thumbnail {
             width: 100px;
             height: auto;
+        }
+        .card-custom-bg {
+            background-color: #00563f !important;
+            color: white;
         }
     </style>
 </head>
@@ -74,70 +88,72 @@
         </div>
     </nav>
 
-  
-    <div class="container mt-4">
-            
-      
-        <div class="d-flex mb-4">
-            <a href="<?= base_url('upload'); ?>" class="btn btn" style="background-color: #55679C; color: white;">Upload</a>
-        </div>
 
-        
-        <div class="table-container">
-            <input type="text" id="searchInput" class="form-control search-bar" placeholder="Search...">
-            <table class="table table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th>Filename</th>
-                        <th>Date</th>
-                        <th>Description</th>
-                        <th>Preview</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody">
-                    <tr>
-                        <td>file1.jpg</td>
-                        <td>2024-08-10</td>
-                        <td>Sample image file</td>
-                        <td><img src="file1.jpg" class="thumbnail" alt="Image"></td>
-                        <td>
-                        <div class="d-flex mb-4">
-                                <a href="<?= base_url('edit'); ?>" class="btn btn" style="background-color: #1E2A5E; color: white; margin-right: 10px;">Edit</a>
-                                <a href="<?= base_url('delete'); ?>" class="btn btn" style="background-color: #800000; color: white; margin-right: 10px;">Delete</a>
+    <!-- Upcoming Events Section -->
+    <div class="container mt-4">
+        <h3>Upcoming Events</h3>
+        <div class="row mb-4">
+            <?php if (!empty($upcomingEvents)): ?>
+                <?php foreach ($upcomingEvents as $event) : ?>
+                    <div class="col-md-3 mb-4">
+                        <div class="card card-custom-bg"> <!-- Applying the custom background class -->
+                            <div class="card-body">
+                                <h5 class="card-title"><?= esc($event['eventname']); ?></h5>
+                                <p class="card-text"><?= esc($event['location']); ?></p>
+                                <p class="card-text"><strong>Date:</strong> <?= esc($event['eventdate']); ?></p>
+                                <p class="card-text"><strong>Time:</strong> <?= esc($event['time']); ?></p>
                             </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>video1.mp4</td>
-                        <td>2024-08-11</td>
-                        <td>Sample video file</td>
-                        <td><video class="thumbnail" controls><source src="video1.mp4" type="video/mp4"></video></td>
-                        <td>
-                        <div class="d-flex mb-4">
-                                <a href="<?= base_url('edit'); ?>" class="btn btn" style="background-color: #1E2A5E; color: white; margin-right: 10px;">Edit</a>
-                                <a href="<?= base_url('delete'); ?>" class="btn btn" style="background-color: #800000; color: white; margin-right: 10px;">Delete</a>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                </tbody>
-            </table>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p>No upcoming events found.</p>
+            <?php endif; ?>
         </div>
     </div>
 
- 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Action Buttons -->
+    <div class="container mt-4">
+        <div class="d-flex mb-4">
+            <a href="<?= base_url('uploadForm'); ?>" class="btn btn" style="background-color: #55679C; color: white; margin-right: 10px;">Upload New Files</a>
+        </div>
+    </div>
 
-    <script>
-        document.getElementById('searchInput').addEventListener('keyup', function() {
-            const filter = this.value.toLowerCase();
-            const rows = document.querySelectorAll('#tableBody tr');
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(filter) ? '' : 'none';
-            });
-        });
-    </script>
+    <!-- User Folders Section -->
+    <div class="container mt-4">
+        <h3>Your Folders</h3>
+        <div class="row">
+            <?php if (!empty($folders)): ?>
+                <?php foreach ($folders as $foldername => $files): ?>
+                    <div class="col-md-12 mb-4">
+                        <div class="card folder-card">
+                            <div class="card-body">
+                                <h5 class="card-title"><?= esc($foldername); ?></h5>
+                            </div>
+                        </div>
+
+                        <!-- Files in this folder -->
+                        <div class="row">
+                            <?php foreach ($files as $file): ?>
+                                <div class="col-md-3">
+                                    <div class="card file-card">
+                                        <div class="card-body">
+                                            <h5 class="card-title"><?= esc($file['filename']); ?></h5>
+                                            <p class="card-text"><?= esc($file['description']); ?></p>
+                                            <p class="card-text"><strong>Status:</strong> <?= $file['status'] == 1 ? 'Active' : 'Inactive'; ?></p>
+                                            <a href="<?= base_url('file/' . $file['fileid']); ?>" class="btn btn-light">View File</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p>No folders or files found.</p>
+            <?php endif; ?>
+        </div>
+    </div>
+    
 </body>
 </html>

@@ -147,6 +147,28 @@
             </form>
         </div>
 
+        <!-- Upcoming Events Section -->
+<div class="container mt-4">
+    <h3>Upcoming Events</h3>
+    <div class="row mb-4">
+        <?php if (!empty($upcomingEvents)): ?>
+            <?php foreach ($upcomingEvents as $event) : ?>
+                <div class="col-md-3 mb-4">
+                    <div class="card text-white" style="background-color: #55679C;">
+                        <div class="card-body">
+                            <h5 class="card-title"><?= esc($event['eventname']); ?></h5>
+                            <p class="card-text"><?= esc($event['location']); ?></p>
+                            <p class="card-text"><strong>Date:</strong> <?= esc($event['eventdate']); ?></p>
+                            <p class="card-text"><strong>Time:</strong> <?= esc($event['time']); ?></p>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <p>No upcoming events found.</p>
+        <?php endif; ?>
+    </div>
+
         <!-- Uploads Gallery -->
         <div class="row">
             <?php foreach ($uploads as $row) : ?>
