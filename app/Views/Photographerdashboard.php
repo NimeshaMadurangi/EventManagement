@@ -32,7 +32,7 @@
             margin-bottom: 20px;
         }
         .file-card {
-            background-color: #55679C !important;
+            background-color: #996515 !important;
             color: white;
             margin-bottom: 20px;
         }
