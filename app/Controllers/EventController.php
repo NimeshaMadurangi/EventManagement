@@ -58,4 +58,9 @@ class EventController extends BaseController
             return redirect()->back()->withInput()->with('error', 'Unable to create event. Please try again.');
         }
     }
+
+    public function eventList()
+    {
+        return view('eventlist');
+    }
 }

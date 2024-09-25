@@ -19,7 +19,7 @@
             padding: 30px;
             background: #fff;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            width: 400px;
+            width: 600px; /* Increased width for two columns */
         }
         .upload-card .form-control {
             border-radius: 30px;
@@ -54,21 +54,43 @@
         <h2 class="text-center mb-4">Create Event</h2>
         <form action="/storeEvent" method="post">
             <?= csrf_field() ?>
-            <div class="mb-3">
-                <label for="eventname" class="form-label">Event Name</label>
-                <input type="text" class="form-control" id="eventname" name="eventname" placeholder="Enter event name" required>
-            </div>
-            <div class="mb-3">
-                <label for="eventdate" class="form-label">Event Date</label>
-                <input type="date" class="form-control" id="eventdate" name="eventdate" required>
-            </div>
-            <div class="mb-3">
-                <label for="time" class="form-label">Time</label>
-                <input type="time" class="form-control" id="time" name="time" required>
-            </div>
-            <div class="mb-3">
-                <label for="location" class="form-label">Location</label>
-                <input type="text" class="form-control" id="location" name="location" placeholder="Enter location" required>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="eventname" class="form-label">Event Name</label>
+                    <input type="text" class="form-control" id="eventname" name="eventname" placeholder="Enter event name" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="eventdate" class="form-label">Event Date</label>
+                    <input type="date" class="form-control" id="eventdate" name="eventdate" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="time" class="form-label">Time</label>
+                    <input type="time" class="form-control" id="time" name="time" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="location" class="form-label">Location</label>
+                    <input type="text" class="form-control" id="location" name="location" placeholder="Enter location" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="photographer" class="form-label">Assign Photographer</label>
+                    <select class="form-control" id="photographer" name="photographer" required>
+                        <option value="" disabled selected>Select a photographer</option>
+                        <option value="photographer1">Photographer 1</option>
+                        <option value="photographer2">Photographer 2</option>
+                        <option value="photographer3">Photographer 3</option>
+                        <!-- Add more photographers as needed -->
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="videographer" class="form-label">Assign Videographer</label>
+                    <select class="form-control" id="videographer" name="videographer" required>
+                        <option value="" disabled selected>Select a videographer</option>
+                        <option value="videographer1">Videographer 1</option>
+                        <option value="videographer2">Videographer 2</option>
+                        <option value="videographer3">Videographer 3</option>
+                        <!-- Add more videographers as needed -->
+                    </select>
+                </div>
             </div>
             <button type="submit">Create Event</button>
         </form>

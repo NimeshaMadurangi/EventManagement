@@ -92,10 +92,12 @@
                     <div class="card-body d-flex flex-column align-items-center">
                         <i class="fa-solid fa-file fa-2x mb-2"></i>
                         <h5 class="card-title">Events</h5>
+                        <a href="<?= base_url('eventlist'); ?>">
                         <p class="card-text fs-1"><?= esc($eventCount); ?></p>
-                    </div>
+        </a>
                 </div>
             </div>
+        </div>
             <div class="col-md-3 mb-4">
                 <div class="card text-white" style="background-color: #7C93C3;">
                     <div class="card-body d-flex flex-column align-items-center">
@@ -124,68 +126,86 @@
             </form>
         </div>
 
-<!-- Upcoming Events Section -->
-<div class="container mt-4">
-    <h3>Upcoming Events</h3>
-    <div class="row mb-4">
-        <?php if (!empty($upcomingEvents)): ?>
-            <?php foreach ($upcomingEvents as $event) : ?>
+        <!-- Upcoming Events Section -->
+        <div class="container mt-4">
+            <h3>Upcoming Events</h3>
+            <div class="row mb-4">
+                <?php if (!empty($upcomingEvents)): ?>
+                    <?php foreach ($upcomingEvents as $event) : ?>
+                        <div class="col-md-3 mb-4">
+                            <div class="card text-white" style="background-color: #55679C;">
+                                <div class="card-body">
+                                    <h5 class="card-title"><?= esc($event['eventname']); ?></h5>
+                                    <p class="card-text"><?= esc($event['location']); ?></p>
+                                    <p class="card-text"><strong>Date:</strong> <?= esc($event['eventdate']); ?></p>
+                                    <p class="card-text"><strong>Time:</strong> <?= esc($event['time']); ?></p>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p>No upcoming events found.</p>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <!-- Folders View -->
+        <div class="row">
+            <?php if (!empty($folders)): ?>
+                <?php foreach ($folders as $folderName => $folderFiles) : ?>
+                    <div class="col-md-3 mb-4">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <i class="fa-solid fa-folder fa-3x" style="color: #55679C;"></i>
+                                <h5 class="card-title mt-3"><?= esc($folderName); ?></h5>
+                                <a href="<?= base_url('folder/' . urlencode($folderName)); ?>" class="btn btn-sm" style="background-color: #55679C; color: white;">Open Folder</a>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p>No folders found.</p>
+            <?php endif; ?>
+        </div>
+
+        <!-- Uploads Gallery -->
+        <div class="row">
+            <?php foreach ($uploads as $row) : ?>
                 <div class="col-md-3 mb-4">
-                    <div class="card text-white" style="background-color: #55679C;">
-                        <div class="card-body">
-                            <h5 class="card-title"><?= esc($event['eventname']); ?></h5>
-                            <p class="card-text"><?= esc($event['location']); ?></p>
-                            <p class="card-text"><strong>Date:</strong> <?= esc($event['eventdate']); ?></p>
-                            <p class="card-text"><strong>Time:</strong> <?= esc($event['time']); ?></p>
+                    <div class="gallery-item card">
+                        <div class="card-body d-flex flex-column">
+                            <?php 
+                            $filePath = base_url('uploads/' . $row['foldername'] . '/' . $row['filename']);
+                            $fileExtension = strtolower(pathinfo($row['filename'], PATHINFO_EXTENSION));
+                            ?>
+
+                            <?php if (in_array($fileExtension, ['jpg', 'jpeg', 'png'])): ?>
+                                <img src="<?= $filePath; ?>" alt="Preview">
+                            <?php elseif (in_array($fileExtension, ['mp4', 'avi', 'mov'])): ?>
+                                <video controls>
+                                    <source src="<?= $filePath; ?>" type="video/<?= $fileExtension; ?>">
+                                    Your browser does not support the video tag.
+                                </video>
+                            <?php else: ?>
+                                <p>Unsupported file type</p>
+                            <?php endif; ?>
+
+                            <h5 class="card-title mt-2"><?= esc($row['filename']); ?></h5>
+                            <p class="card-text"><?= esc($row['foldername']); ?></p>
+                            <p class="card-text"><?= esc($row['username']); ?></p>
+                            <p class="card-text text-muted"><?= esc($row['created_at']); ?></p>
+
+                            <div class="mt-auto">
+                                <a href="<?= base_url('download/' . $row['fileid']); ?>" class="btn btn-sm" style="background-color: #254336; color: white; margin-bottom: 10px;">Download</a>
+                                <a href="<?= base_url('edit/' . $row['fileid']); ?>" class="btn btn-sm" style="background-color: #E0A75E; color: white; margin-bottom: 10px;">Edit</a>
+                                <a href="<?= base_url('delete/' . $row['fileid']); ?>" class="btn btn-sm" style="background-color: #800000; color: white; margin-bottom: 10px;" onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
+                            </div>
                         </div>
                     </div>
                 </div>
             <?php endforeach; ?>
-        <?php else: ?>
-            <p>No upcoming events found.</p>
-        <?php endif; ?>
-    </div>
-</div>
-
-
-<!-- Uploads Gallery -->
-<div class="row">
-    <?php foreach ($uploads as $row) : ?>
-        <div class="col-md-3 mb-4">
-            <div class="gallery-item card">
-                <div class="card-body d-flex flex-column">
-                    <?php 
-                    $filePath = base_url('uploads/' . $row['foldername'] . '/' . $row['filename']);
-                    $fileExtension = strtolower(pathinfo($row['filename'], PATHINFO_EXTENSION));
-                    ?>
-
-                    <?php if (in_array($fileExtension, ['jpg', 'jpeg', 'png'])): ?>
-                        <img src="<?= $filePath; ?>" alt="Preview">
-                    <?php elseif (in_array($fileExtension, ['mp4', 'avi', 'mov'])): ?>
-                        <video controls>
-                            <source src="<?= $filePath; ?>" type="video/<?= $fileExtension; ?>">
-                            Your browser does not support the video tag.
-                        </video>
-                    <?php else: ?>
-                        <p>Unsupported file type</p>
-                    <?php endif; ?>
-
-                    <h5 class="card-title mt-2"><?= esc($row['filename']); ?></h5>
-                    <p class="card-text"><?= esc($row['foldername']); ?></p>
-                    <p class="card-text"><?= esc($row['username']); ?></p>
-                    <p class="card-text text-muted"><?= esc($row['created_at']); ?></p>
-
-                    <div class="mt-auto">
-                        <a href="<?= base_url('download/' . $row['fileid']); ?>" class="btn btn-sm" style="background-color: #254336; color: white; margin-bottom: 10px;">Download</a>
-                        <a href="<?= base_url('edit/' . $row['fileid']); ?>" class="btn btn-sm" style="background-color: #E0A75E; color: white; margin-bottom: 10px;">Edit</a>
-                        <a href="<?= base_url('delete/' . $row['fileid']); ?>" class="btn btn-sm" style="background-color: #800000; color: white; margin-bottom: 10px;" onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
-                    </div>
-                </div>
-            </div>
         </div>
-    <?php endforeach; ?>
-</div>
-
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 

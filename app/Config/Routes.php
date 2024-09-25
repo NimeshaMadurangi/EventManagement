@@ -41,8 +41,11 @@ $routes->post('/upload', 'FileController::upload');
 //event
 $routes->get('/eventForm', 'EventController::eventForm');
 $routes->post('/storeEvent', 'EventController::storeEvent');
+$routes->get('/eventlist', 'EventController::eventList');
 
 
 $routes->post('file/updateStatus', 'FileController::updateStatus');
 
 $routes->get('approved-uploads', 'FileController::approvedUploads');
+
+
