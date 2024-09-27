@@ -75,20 +75,13 @@
                     <label for="photographer" class="form-label">Assign Photographer</label>
                     <select class="form-control" id="photographer" name="photographer" required>
                         <option value="" disabled selected>Select a photographer</option>
-                        <option value="photographer1">Photographer 1</option>
-                        <option value="photographer2">Photographer 2</option>
-                        <option value="photographer3">Photographer 3</option>
-                        <!-- Add more photographers as needed -->
-                    </select>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label for="videographer" class="form-label">Assign Videographer</label>
-                    <select class="form-control" id="videographer" name="videographer" required>
-                        <option value="" disabled selected>Select a videographer</option>
-                        <option value="videographer1">Videographer 1</option>
-                        <option value="videographer2">Videographer 2</option>
-                        <option value="videographer3">Videographer 3</option>
-                        <!-- Add more videographers as needed -->
+                        <?php if (!empty($photographers)): ?>
+                            <?php foreach($photographers as $photographer): ?>
+                                <option value="<?php echo $photographer['id']; ?>"><?php echo $photographer['username']; ?></option>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <option value="" disabled>No photographers available</option>
+                        <?php endif; ?>
                     </select>
                 </div>
             </div>

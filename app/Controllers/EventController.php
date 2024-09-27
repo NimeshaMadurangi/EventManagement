@@ -10,7 +10,15 @@ class EventController extends BaseController
     // Display the event creation form
     public function eventForm()
     {
-        return view('eventCreate');
+        $userModel = new UserModel();
+
+        // Fetch all photographers and videographers from the database
+        $photographers = $userModel->where('role', 'photographer')->findAll();
+
+        // Pass the lists to the view
+        return view('eventCreate', [
+            'photographers' => $photographers
+        ]);
     }
 
     // Handle event creation
@@ -32,7 +40,8 @@ class EventController extends BaseController
             'eventname' => 'required|min_length[3]|max_length[255]',
             'eventdate' => 'required|valid_date[Y-m-d]',
             'time'      => 'required|regex_match[/^(?:2[0-3]|[01][0-9]):[0-5][0-9]$/]', // Validate time in HH:MM format
-            'location'  => 'required|min_length[3]|max_length[255]'
+            'location'  => 'required|min_length[3]|max_length[255]',
+            'photographer'  => 'required|min_length[3]|max_length[100]'
         ];
 
         // Validate the form inputs
@@ -46,7 +55,8 @@ class EventController extends BaseController
             'eventdate' => $this->request->getPost('eventdate'),
             'time'      => $this->request->getPost('time'),
             'location'  => $this->request->getPost('location'),
-            'username'  => $username // User logged in
+            'username'  => $username,
+            'photographer'  => $this->request->getPost('photographer')
         ];
 
         // Attempt to insert the data into the database
