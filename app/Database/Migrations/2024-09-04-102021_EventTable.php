@@ -17,7 +17,7 @@ class EventTable extends Migration
             ],
             'eventname' => [
                 'type' => 'VARCHAR',
-                'constraint' => '255', // Adjusted for validation consistency
+                'constraint' => '255',
             ],
             'eventdate' => [
                 'type' => 'DATE',
@@ -34,10 +34,6 @@ class EventTable extends Migration
                 'constraint' => '100',
             ],
             'photographer' => [
-                'type' => 'VARCHAR',
-                'constraint' => '100',
-            ],
-            'videohrapher' => [
                 'type' => 'VARCHAR',
                 'constraint' => '100',
             ],

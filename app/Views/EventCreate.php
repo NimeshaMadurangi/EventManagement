@@ -19,7 +19,7 @@
             padding: 30px;
             background: #fff;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            width: 600px; /* Increased width for two columns */
+            width: 600px;
         }
         .upload-card .form-control {
             border-radius: 30px;
@@ -53,6 +53,7 @@
     <div class="upload-card">
         <h2 class="text-center mb-4">Create Event</h2>
         <form action="/storeEvent" method="post">
+            <!-- CSRF Token Placeholder -->
             <?= csrf_field() ?>
             <div class="row">
                 <div class="col-md-6 mb-3">
@@ -76,8 +77,8 @@
                     <select class="form-control" id="photographer" name="photographer" required>
                         <option value="" disabled selected>Select a photographer</option>
                         <?php if (!empty($photographers)): ?>
-                            <?php foreach($photographers as $photographer): ?>
-                                <option value="<?php echo $photographer['id']; ?>"><?php echo $photographer['username']; ?></option>
+                            <?php foreach ($photographers as $photographer): ?>
+                                <option value="<?php echo $photographer['id']; ?>"><?php echo htmlspecialchars($photographer['username'], ENT_QUOTES, 'UTF-8'); ?></option>
                             <?php endforeach; ?>
                         <?php else: ?>
                             <option value="" disabled>No photographers available</option>

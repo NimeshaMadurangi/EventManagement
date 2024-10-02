@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\EventModel;
+use App\Models\UserModel;
 
 class EventController extends BaseController
 {
@@ -12,10 +13,16 @@ class EventController extends BaseController
     {
         $userModel = new UserModel();
 
-        // Fetch all photographers and videographers from the database
-        $photographers = $userModel->where('role', 'photographer')->findAll();
+        // Fetch all photographers from the database
+        try {
+            $photographers = $userModel->where('role', 'photographer')->findAll();
+        } catch (\Exception $e) {
+            // Log an error message for troubleshooting
+            log_message('error', 'Failed to fetch photographers from the database: ' . $e->getMessage());
+            $photographers = []; // Set to an empty array if fetching fails
+        }
 
-        // Pass the lists to the view
+        // Pass the photographers list to the view
         return view('eventCreate', [
             'photographers' => $photographers
         ]);
@@ -41,7 +48,7 @@ class EventController extends BaseController
             'eventdate' => 'required|valid_date[Y-m-d]',
             'time'      => 'required|regex_match[/^(?:2[0-3]|[01][0-9]):[0-5][0-9]$/]', // Validate time in HH:MM format
             'location'  => 'required|min_length[3]|max_length[255]',
-            'photographer'  => 'required|min_length[3]|max_length[100]'
+            'photographer' => 'required|integer|is_not_unique[users.id]'
         ];
 
         // Validate the form inputs
@@ -51,26 +58,43 @@ class EventController extends BaseController
 
         // Prepare the data for insertion
         $data = [
-            'eventname' => $this->request->getPost('eventname'),
-            'eventdate' => $this->request->getPost('eventdate'),
-            'time'      => $this->request->getPost('time'),
-            'location'  => $this->request->getPost('location'),
-            'username'  => $username,
+            'eventname'     => $this->request->getPost('eventname'),
+            'eventdate'     => $this->request->getPost('eventdate'),
+            'time'          => $this->request->getPost('time'),
+            'location'      => $this->request->getPost('location'),
+            'username'      => $username, // Organizer's username
             'photographer'  => $this->request->getPost('photographer')
         ];
 
-        // Attempt to insert the data into the database
-        if ($eventModel->save($data)) {
-            return redirect()->to('/admin/admindashboard')->with('success', 'Event created successfully.');
-        } else {
-            // Log the error details
-            log_message('error', 'Event creation failed: ' . print_r($eventModel->errors(), true));
+        // Try inserting data into the database
+        try {
+            if ($eventModel->save($data)) {
+                return redirect()->to('/admin/admindashboard')->with('success', 'Event created successfully.');
+            }
+        } catch (\Exception $e) {
+            // Log any error if the event creation fails
+            log_message('error', 'Event creation failed: ' . $e->getMessage());
             return redirect()->back()->withInput()->with('error', 'Unable to create event. Please try again.');
         }
     }
 
+    // Display a list of events
     public function eventList()
     {
-        return view('eventlist');
+        $eventModel = new EventModel();
+        $session = session();
+
+        // Retrieve the list of events from the database
+        try {
+            $events = $eventModel->findAll();
+        } catch (\Exception $e) {
+            log_message('error', 'Failed to fetch events: ' . $e->getMessage());
+            $events = []; // Return an empty array if fetching fails
+        }
+
+        return view('eventList', [
+            'events' => $events,
+            'username' => $session->get('username')
+        ]);
     }
 }
