@@ -47,7 +47,8 @@ class EventController extends BaseController
             'eventname'    => 'required|min_length[3]|max_length[255]',
             'eventdate'    => 'required|valid_date[Y-m-d]',
             'time'         => 'required|regex_match[/^(?:2[0-3]|[01][0-9]):[0-5][0-9]$/]', // Validate time in HH:MM format
-            'location'     => 'required|min_length[3]|max_length[255]'
+            'location'     => 'required|min_length[3]|max_length[255]',
+            'photographer'  => 'required|min_length[3]|max_length[100]'
         ];
 
         // Validate the form inputs
