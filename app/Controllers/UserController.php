@@ -136,4 +136,62 @@ class UserController extends BaseController
         
         return redirect()->to('/listusers')->with('success', 'User deleted successfully');
     }
+
+    //profile
+    public function profile()
+    {
+        $session = session();
+        $username = $session->get('username'); // Retrieve the logged-in user's username
+
+        // Fetch user details from the database
+        $userModel = new UserModel();
+        $user = $userModel->where('username', $username)->first();
+
+        if (!$user) {
+            return redirect()->to('/login')->with('error', 'User not found.');
+        }
+
+        return view('profile', [
+            'user' => $user,
+        ]);
+    }
+
+    // Handle profile update
+    public function updateProfile()
+    {
+        $session = session();
+        $username = $session->get('username'); // Retrieve the logged-in user's username
+
+        // Validation rules
+        $rules = [
+            'username' => 'required|min_length[3]|max_length[50]',
+            'email'    => 'required|valid_email',
+            'password' => 'permit_empty|min_length[6]',
+        ];
+
+        if (!$this->validate($rules)) {
+            return redirect()->back()->withInput()->with('error', $this->validator->getErrors());
+        }
+
+        // Prepare data for update
+        $data = [
+            'username' => $this->request->getPost('username'),
+            'email'    => $this->request->getPost('email'),
+        ];
+
+        // Update password only if it's provided
+        if ($this->request->getPost('password')) {
+            $data['password'] = password_hash($this->request->getPost('password'), PASSWORD_DEFAULT);
+        }
+
+        // Update the user profile in the database
+        $userModel = new UserModel();
+        try {
+            $userModel->update($session->get('id'), $data);
+            return redirect()->to('/profile')->with('success', 'Profile updated successfully.');
+        } catch (\Exception $e) {
+            log_message('error', 'Profile update failed: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Unable to update profile. Please try again.');
+        }
+    }
 }

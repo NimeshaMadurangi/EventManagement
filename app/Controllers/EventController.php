@@ -44,32 +44,34 @@ class EventController extends BaseController
 
         // Define validation rules
         $rules = [
-            'eventname' => 'required|min_length[3]|max_length[255]',
-            'eventdate' => 'required|valid_date[Y-m-d]',
-            'time'      => 'required|regex_match[/^(?:2[0-3]|[01][0-9]):[0-5][0-9]$/]', // Validate time in HH:MM format
-            'location'  => 'required|min_length[3]|max_length[255]',
-            'photographer' => 'required|integer|is_not_unique[users.id]'
+            'eventname'    => 'required|min_length[3]|max_length[255]',
+            'eventdate'    => 'required|valid_date[Y-m-d]',
+            'time'         => 'required|regex_match[/^(?:2[0-3]|[01][0-9]):[0-5][0-9]$/]', // Validate time in HH:MM format
+            'location'     => 'required|min_length[3]|max_length[255]'
         ];
 
         // Validate the form inputs
         if (!$this->validate($rules)) {
-            return redirect()->back()->withInput()->with('error', $this->validator->getErrors());
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
         // Prepare the data for insertion
         $data = [
-            'eventname'     => $this->request->getPost('eventname'),
-            'eventdate'     => $this->request->getPost('eventdate'),
-            'time'          => $this->request->getPost('time'),
-            'location'      => $this->request->getPost('location'),
-            'username'      => $username, // Organizer's username
-            'photographer'  => $this->request->getPost('photographer')
+            'eventname'    => $this->request->getPost('eventname'),
+            'eventdate'    => $this->request->getPost('eventdate'),
+            'time'         => $this->request->getPost('time'),
+            'location'     => $this->request->getPost('location'),
+            'username'     => $username, // Organizer's username
+            'photographer' => $this->request->getPost('photographer') // Corrected field name
         ];
 
         // Try inserting data into the database
         try {
             if ($eventModel->save($data)) {
                 return redirect()->to('/admin/admindashboard')->with('success', 'Event created successfully.');
+            } else {
+                // Handle the case where save returns false
+                return redirect()->back()->withInput()->with('error', 'Failed to create event. Please try again.');
             }
         } catch (\Exception $e) {
             // Log any error if the event creation fails
@@ -93,7 +95,7 @@ class EventController extends BaseController
         }
 
         return view('eventList', [
-            'events' => $events,
+            'events'   => $events,
             'username' => $session->get('username')
         ]);
     }

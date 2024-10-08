@@ -36,6 +36,7 @@ class EventTable extends Migration
             'photographer' => [
                 'type' => 'VARCHAR',
                 'constraint' => '100',
+                'unsigned'   => true,
             ],
             'created_at' => [
                 'type' => 'DATETIME',

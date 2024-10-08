@@ -48,4 +48,9 @@ $routes->post('file/updateStatus', 'FileController::updateStatus');
 
 $routes->get('approved-uploads', 'FileController::approvedUploads');
 
+//profile
+$routes->get('/profile', 'UserController::profile');
+$routes->post('/updateProfile', 'UserController::updateProfile');
+
+
 
