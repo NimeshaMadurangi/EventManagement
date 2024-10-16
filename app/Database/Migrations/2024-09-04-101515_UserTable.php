@@ -18,7 +18,7 @@ class UserTable extends Migration
             'username' => [
                 'type' => 'VARCHAR',
                 'constraint' => '100',
-                'unique' => true, // Ensure uniqueness
+                'unique' => true,
             ],
             'email' => [
                 'type' => 'VARCHAR',

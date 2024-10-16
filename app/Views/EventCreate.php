@@ -72,19 +72,6 @@
                     <label for="location" class="form-label">Location</label>
                     <input type="text" class="form-control" id="location" name="location" placeholder="Enter location" required>
                 </div>
-                <div class="col-md-6 mb-3">
-                    <label for="photographer" class="form-label">Assign Photographer</label>
-                    <select class="form-control" id="photographer" name="photographer" required>
-                        <option value="" disabled selected>Select a photographer</option>
-                        <?php if (!empty($photographers)): ?>
-                            <?php foreach ($photographers as $photographer): ?>
-                                <option value="<?php echo $photographer['id']; ?>"><?php echo htmlspecialchars($photographer['username'], ENT_QUOTES, 'UTF-8'); ?></option>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <option value="" disabled>No photographers available</option>
-                        <?php endif; ?>
-                    </select>
-                </div>
             </div>
             <button type="submit">Create Event</button>
         </form>

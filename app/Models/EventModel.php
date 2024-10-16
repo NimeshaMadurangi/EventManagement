@@ -12,7 +12,7 @@ class EventModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['eventname', 'eventdate', 'time', 'location', 'username','photographer'];
+    protected $allowedFields    = ['eventname', 'eventdate', 'time', 'location', 'username'];
 
     protected bool $allowEmptyInserts = false;
 
@@ -28,8 +28,7 @@ class EventModel extends Model
         'eventdate' => 'required|valid_date[Y-m-d]',
         'time'      => 'required|valid_date[H:i]',
         'location'  => 'required|max_length[255]',
-        'username'  => 'required|min_length[3]|max_length[100]',
-        'photographer'  => 'required|min_length[3]|max_length[100]'
+        'username'  => 'required|min_length[3]|max_length[100]'
     ];
 
     protected $validationMessages = [
@@ -51,11 +50,6 @@ class EventModel extends Model
             'max_length' => 'Location cannot exceed 255 characters'
         ],
         'username' => [
-            'required'   => 'Username is required',
-            'min_length' => 'Username must be at least 3 characters long',
-            'max_length' => 'Username cannot exceed 100 characters'
-        ],
-        'photographer' => [
             'required'   => 'Username is required',
             'min_length' => 'Username must be at least 3 characters long',
             'max_length' => 'Username cannot exceed 100 characters'
