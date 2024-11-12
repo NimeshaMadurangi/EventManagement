@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use CodeIgniter\Model;
-
-class FileModel extends Model
+class FileModel extends BaseModel
 {
     protected $table            = 'file';
     protected $primaryKey       = 'fileid';
@@ -12,15 +10,7 @@ class FileModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-
-    // Allowed fields
     protected $allowedFields    = ['filename', 'foldername', 'username', 'description', 'status'];
-
-    // Dates
-    protected $useTimestamps    = true;
-    protected $dateFormat       = 'datetime';
-    protected $createdField     = 'created_at';
-    protected $updatedField     = 'updated_at';
 
     // Validation rules
     protected $validationRules  = [
@@ -53,9 +43,6 @@ class FileModel extends Model
         ]
     ];
 
-    protected $skipValidation       = false;
-    protected $cleanValidationRules = true;
-
     /**
      * Update the status of a file record.
      *
@@ -65,12 +52,10 @@ class FileModel extends Model
      */
     public function updateStatus($id, $status)
     {
-        // Validate the status
         if (!in_array($status, [0, 1])) {
             return false;
         }
 
-        // Update the status
         return $this->update($id, ['status' => $status]);
     }
 }

@@ -33,7 +33,7 @@ class EventTable extends Migration
                 'type' => 'VARCHAR',
                 'constraint' => '100',
             ],
-            'photographer' => [
+            'photographername' => [  // Changed to 'photographername' as requested
                 'type' => 'VARCHAR',
                 'constraint' => '100',
             ],
@@ -46,13 +46,20 @@ class EventTable extends Migration
                 'null' => true,
             ],
         ]);
+
+        // Adding the primary key
         $this->forge->addKey('eventid', true);
+
+        // Adding the foreign key to reference 'users' table based on 'username'
         $this->forge->addForeignKey('username', 'users', 'username', 'CASCADE', 'CASCADE');
-        $this->forge->createTable('event');
+
+        // Creating the events table
+        $this->forge->createTable('events');
     }
 
     public function down()
     {
-        $this->forge->dropTable('event');
+        // Dropping the events table along with the foreign key relationship
+        $this->forge->dropTable('events');
     }
 }

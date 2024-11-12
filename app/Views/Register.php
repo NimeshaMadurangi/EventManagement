@@ -50,27 +50,44 @@
             font-size: 24px;
             margin-bottom: 20px;
         }
+        .alert {
+            display: none; /* Initially hide alerts */
+        }
     </style>
 </head>
 <body>
     <div class="register-card">
         <h2 class="text-center">Register</h2>
+
+        <!-- Success or error alert -->
+        <?php if (session()->getFlashdata('errors')): ?>
+            <div class="alert alert-danger">
+                <?= session()->getFlashdata('errors') ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if (session()->getFlashdata('success')): ?>
+            <div class="alert alert-success">
+                <?= session()->getFlashdata('success') ?>
+            </div>
+        <?php endif; ?>
+
         <form method="post" action="<?= site_url('user/createuser'); ?>">
             <?= csrf_field(); ?>
             <div class="mb-3">
-                <input type="text" name="username" class="form-control" placeholder="Username" required>
+                <input type="text" name="username" class="form-control" placeholder="Username" required aria-label="Username">
             </div>
             <div class="mb-3">
-                <input type="email" name="email" class="form-control" placeholder="Email" required>
+                <input type="email" name="email" class="form-control" placeholder="Email" required aria-label="Email">
             </div>
             <div class="mb-3">
-                <input type="password" name="password" class="form-control" placeholder="Password" required>
+                <input type="password" name="password" class="form-control" placeholder="Password" required aria-label="Password">
             </div>
             <div class="mb-3">
-                <input type="password" name="confirmPassword" class="form-control" placeholder="Confirm Password" required>
+                <input type="password" name="confirmPassword" class="form-control" placeholder="Confirm Password" required aria-label="Confirm Password">
             </div>
             <div class="mb-3">
-                <select name="role" class="form-control" required>
+                <select name="role" class="form-control" required aria-label="User Role">
                     <option value="" disabled selected>Select a role</option>
                     <option value="admin">Admin</option>
                     <option value="manager">Manager</option>

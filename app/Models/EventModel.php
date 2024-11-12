@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use CodeIgniter\Model;
-
-class EventModel extends Model
+class EventModel extends BaseModel
 {
     protected $table            = 'event';
     protected $primaryKey       = 'eventid';
@@ -12,15 +10,11 @@ class EventModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['eventname', 'eventdate', 'time', 'location', 'username'];
+    
+    // Allowed fields
+    protected $allowedFields    = ['eventname', 'eventdate', 'time', 'location', 'username', 'photographername'];
 
     protected bool $allowEmptyInserts = false;
-
-    // Dates
-    protected $useTimestamps = true;
-    protected $dateFormat    = 'datetime';
-    protected $createdField  = 'created_at';
-    protected $updatedField  = 'updated_at';
 
     // Validation
     protected $validationRules = [
@@ -28,7 +22,8 @@ class EventModel extends Model
         'eventdate' => 'required|valid_date[Y-m-d]',
         'time'      => 'required|valid_date[H:i]',
         'location'  => 'required|max_length[255]',
-        'username'  => 'required|min_length[3]|max_length[100]'
+        'username'  => 'required|min_length[3]|max_length[100]',
+        'photographername' => 'required|min_length[3]|max_length[100]', // Added validation for photographername
     ];
 
     protected $validationMessages = [
@@ -53,20 +48,11 @@ class EventModel extends Model
             'required'   => 'Username is required',
             'min_length' => 'Username must be at least 3 characters long',
             'max_length' => 'Username cannot exceed 100 characters'
+        ],
+        'photographername' => [
+            'required'   => 'Photographer name is required',
+            'min_length' => 'Photographer name must be at least 3 characters long',
+            'max_length' => 'Photographer name cannot exceed 100 characters',
         ]
     ];
-
-    protected $skipValidation       = false;
-    protected $cleanValidationRules = true;
-
-    // Callbacks
-    protected $allowCallbacks = true;
-    protected $beforeInsert   = [];
-    protected $afterInsert    = [];
-    protected $beforeUpdate   = [];
-    protected $afterUpdate    = [];
-    protected $beforeFind     = [];
-    protected $afterFind      = [];
-    protected $beforeDelete   = [];
-    protected $afterDelete    = [];
 }

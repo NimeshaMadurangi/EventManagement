@@ -21,31 +21,27 @@ class UserController extends BaseController
     {
         $userModel = new UserModel();
 
-        $validation = \Config\Services::validation();
-
-        $validation->setRules([
-            'username' => 'required|min_length[3]|is_unique[users.username]',
-            'email' => 'required|valid_email|is_unique[users.email]',
-            'password' => 'required|min_length[8]',
-            'confirmPassword' => 'required|matches[password]',
-            'role' => 'required|in_list[admin,manager,photographer,fbteam]',
-        ]);
-
-        if (!$this->validate($validation->getRules())) {
+        if (!$this->validate($userModel->validationRules)) {
+            log_message('error', 'Validation failed: ' . json_encode($this->validator->getErrors()));
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
         $data = [
             'username' => $this->request->getPost('username'),
             'email' => $this->request->getPost('email'),
-            'password' => $this->request->getPost('password'), // Store plain text password
+            'password' => $this->request->getPost('password'),
             'role' => $this->request->getPost('role'),
         ];
 
-        if ($userModel->insert($data)) {
-            return redirect()->to('/login')->with('success', 'Account created successfully. Please log in.');
-        } else {
-            log_message('error', print_r($userModel->errors(), true));
+        try {
+            if ($userModel->insert($data)) {
+                return redirect()->to('/login')->with('success', 'Account created successfully. Please log in.');
+            } else {
+                log_message('error', 'Database insert failed: ' . json_encode($userModel->errors()));
+                return redirect()->back()->withInput()->with('error', 'Unable to create account. Please try again.');
+            }
+        } catch (\Exception $e) {
+            log_message('error', 'Exception occurred: ' . $e->getMessage());
             return redirect()->back()->withInput()->with('error', 'Unable to create account. Please try again.');
         }
     }

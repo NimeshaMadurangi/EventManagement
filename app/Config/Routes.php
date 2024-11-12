@@ -52,5 +52,10 @@ $routes->get('approved-uploads', 'FileController::approvedUploads');
 $routes->get('/profile', 'UserController::profile');
 $routes->post('/updateProfile', 'UserController::updateProfile');
 
+// $routes->post('/user/createuser', 'UserController::createUser');
+// $routes->post('/storeEvent', 'EventController::createEvent');
+// $routes->get('/upcoming-events', 'EventController::showUpcomingEvents');
+
+
 
 

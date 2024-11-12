@@ -2,66 +2,29 @@
 
 namespace App\Controllers;
 
-use App\Controllers\BaseController;
 use App\Models\EventModel;
-use CodeIgniter\I18n\Time;
+use CodeIgniter\Controller;
 
-class EventController extends BaseController
+class EventController extends Controller
 {
-    // Display the admin dashboard with event details
-    public function eventlist()
+    public function createEvent()
     {
         $eventModel = new EventModel();
 
-        // Fetch the total count of events
-        $eventCount = $eventModel->countAllResults();
-
-        // Fetch upcoming events (events where the date is today or in the future)
-        $today = date('Y-m-d');
-        $upcomingEvents = $eventModel->where('eventdate >=', $today)
-                                     ->orderBy('eventdate', 'ASC')
-                                     ->findAll();
-
-        // Pass the data to the view
-        $data = [
-            'eventCount' => $eventCount,
-            'upcomingEvents' => $upcomingEvents
-        ];
-
-        return view('eventlist', $data);
-    }
-
-    // Display the event creation form
-    public function eventForm()
-    {
-        return view('eventCreate');
-    }
-
-    // Store the event data
-    public function storeEvent()
-    {
-        $eventModel = new EventModel();
-
-        $validation = $this->validate([
-            'eventname' => 'required|max_length[255]',
-            'eventdate' => 'required|valid_date',
-            'time' => 'required',
-            'location' => 'required|max_length[255]',
-        ]);
-
-        if (!$validation) {
-            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+        $data = $this->request->getPost();
+        if ($this->request->getMethod() === 'post') {
+            if ($eventModel->insert($data)) {
+                return redirect()->back()->with('success', 'Event created successfully');
+            } else {
+                return redirect()->back()->with('errors', $eventModel->errors());
+            }
         }
+    }
 
-        $data = [
-            'eventname' => $this->request->getPost('eventname'),
-            'eventdate' => $this->request->getPost('eventdate'),
-            'time' => $this->request->getPost('time'),
-            'location' => $this->request->getPost('location'),
-        ];
-
-        $eventModel->save($data);
-
-        return redirect()->to('/admin/admindashboard')->with('success', 'Event created successfully.');
+    public function showUpcomingEvents()
+    {
+        $eventModel = new EventModel();
+        $data['upcomingEvents'] = $eventModel->findAll(); // Fetch all events from DB
+        return view('events', $data);
     }
 }

@@ -33,6 +33,14 @@ class UserTable extends Migration
                 'constraint' => ['admin', 'manager', 'photographer', 'fbteam'],
                 'default' => 'photographer',
             ],
+            'created_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+            'updated_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
         ]);
         $this->forge->addKey('id', true);
         $this->forge->createTable('users');
@@ -43,3 +51,6 @@ class UserTable extends Migration
         $this->forge->dropTable('users');
     }
 }
+
+
+//supervisor gena ahanna
